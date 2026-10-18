@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AnyRouter.top 自动签到脚本
+AnyRouter.top auto check-in script
 """
 
 import asyncio
@@ -316,14 +316,14 @@ def execute_check_in(client, account_name: str, provider_config, headers: dict):
 
 
 def format_check_in_notification(detail: dict) -> str:
-	"""格式化签到通知消息"""
+	"""Format the check-in notification message"""
 	lines = [
 		f'[CHECK-IN] {detail["name"]}',
 		'  ━━━━━━━━━━━━━━━━━━━━',
-		'  签到前',
-		f'     余额: ${detail["before_quota"]:.2f}  |  累计消耗: ${detail["before_used"]:.2f}',
-		'  签到后',
-		f'     余额: ${detail["after_quota"]:.2f}  |  累计消耗: ${detail["after_used"]:.2f}',
+		'  Before',
+		f'     Balance: ${detail["before_quota"]:.2f}  |  Total used: ${detail["before_used"]:.2f}',
+		'  After',
+		f'     Balance: ${detail["after_quota"]:.2f}  |  Total used: ${detail["after_used"]:.2f}',
 	]
 
 	has_reward = detail['check_in_reward'] != 0
@@ -333,19 +333,19 @@ def format_check_in_notification(detail: dict) -> str:
 		lines.append('  ━━━━━━━━━━━━━━━━━━━━')
 
 		if not has_reward and has_usage:
-			lines.append('  今日已签到（期间有使用）')
+			lines.append('  Already checked in today (usage during period)')
 
 		if has_reward:
-			lines.append(f'  签到获得: +${detail["check_in_reward"]:.2f}')
+			lines.append(f'  Reward: +${detail["check_in_reward"]:.2f}')
 
 		if has_usage:
-			lines.append(f'  期间消耗: ${detail["usage_increase"]:.2f}')
+			lines.append(f'  Used during period: ${detail["usage_increase"]:.2f}')
 
 		if detail['balance_change'] != 0:
 			change_symbol = '+' if detail['balance_change'] > 0 else ''
-			lines.append(f'  余额变化: {change_symbol}${detail["balance_change"]:.2f}')
+			lines.append(f'  Balance change: {change_symbol}${detail["balance_change"]:.2f}')
 	else:
-		lines.extend(['  ━━━━━━━━━━━━━━━━━━━━', '  今日已签到，无变化'])
+		lines.extend(['  ━━━━━━━━━━━━━━━━━━━━', '  Already checked in today, no change'])
 
 	return '\n'.join(lines)
 
